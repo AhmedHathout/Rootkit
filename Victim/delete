@@ -1,0 +1,7 @@
+sudo rm main.ko
+sudo rm -r .*
+sudo rm main.mod.*
+sudo rm main.o
+sudo rm Module.symvers
+sudo rm modules.order
+sudo rm main.o.ur-safe
